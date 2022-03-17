@@ -9,7 +9,15 @@ columns.insert(0,"")
 players_df.columns = columns
 players_df.set_index("", inplace=True)
 
-def sort_players(df, col):
-  return df.iloc[:-1,:].sort_values(by=col)
+def get_average(df, col_type):
+	col = [col for col in df.columns if col_type in col]
+	new_df = df[col]
+	new_df[col_type+" Average"] = new_df.T.mean()
+	new_df.sort_values(col_type+" Average", inplace=True)
+	return new_df
 
+st.subheader("Season Average")
 st.dataframe(players_df, 1000, 1000)
+
+st.subheader("Match Average")
+st.dataframe(get_average(players_df, "Match"), 1000, 1000)
