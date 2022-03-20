@@ -13,7 +13,7 @@ players_df.set_index("", inplace=True)
 def get_average(df, col_types): #gets average depending on one or more column types
 	columns = []
 	for col in df.columns:
-		if all(col_type in col for col_type in col_types):
+		if any(col_type in col for col_type in col_types):
 			columns.append(col)
 	new_df = df[columns]
 	new_df["Scoring Average"] = new_df.T.mean()
@@ -38,7 +38,7 @@ if selection == "Season Average": #gives entire dataframe
 	st.dataframe(players_df, 1000, 1000)
 
 if selection == "User Selected Average": #gives selected columns of dataframe
-	col_types = st.sidebar.selectbox("Round Type", ("Match", "Practice Round"))
+	col_types = st.sidebar.multiselect("Round Type", ("Match", "Practice Round", "Oak Creek", "Strawberry Farms", "Rancho San Joaquin"))
 	select_df = get_average(players_df, col_types)
 
 	st.subheader("Selected Average")
