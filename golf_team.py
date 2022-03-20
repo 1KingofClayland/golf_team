@@ -10,11 +10,14 @@ columns.insert(0,"")
 players_df.columns = columns
 players_df.set_index("", inplace=True)
 
-def get_average(df, col_type): #gets average depending on a certain column type
-	col = [col for col in df.columns if col_type in col]
-	new_df = df[col]
-	new_df[col_type+" Average"] = new_df.T.mean()
-	new_df.sort_values(col_type+" Average", inplace=True)
+def get_average(df, col_types): #gets average depending on one or more column types
+	columns = []
+	for col in df.columns:
+		if all(col_type in col for col_type in col_types):
+			columns.append(col)
+	new_df = df[columns]
+	new_df["Scoring Average"] = new_df.T.mean()
+	new_df.sort_values("Scoring Average", inplace=True)
 	return new_df
 
 def average_without_max(pd_series): #gets average without the max value in a pandas series
@@ -27,16 +30,22 @@ def average_without_max(pd_series): #gets average without the max value in a pan
 		average = series_max
 	return average
 
-st.subheader("Season Average")
-st.dataframe(players_df, 1000, 1000)
+#gets the type of dataframe the user wants
+selection = st.sidebar.selectbox("Dataframe", ("Season Average", "User Selected Average", "Match Average Without Worse Score"))
 
-match_df = get_average(players_df, "Match")
+if selection == "Season Average": #gives entire dataframe
+	st.subheader("Season Average")
+	st.dataframe(players_df, 1000, 1000)
 
-st.subheader("Match Average")
-st.dataframe(match_df, 1000, 1000)
+if selection == "User Selected Average": #gives selected columns of dataframe
+	col_types = st.sidebar.selectbox("Round Type", ("Match", "Practice Round"))
+	select_df = get_average(players_df, col_types)
 
-if st.checkbox("Match Average Without Worse Score"):
-	revised_match_df = pd.DataFrame(match_df.iloc[:, :-1].apply(average_without_max, axis=1))
+	st.subheader("Selected Average")
+	st.dataframe(select_df, 1000, 1000)
+
+if selection == "Match Average Without Worse Score":
+	revised_match_df = pd.DataFrame(get_average(players_df, ["Match"]).iloc[:, :-1].apply(average_without_max, axis=1))
 	revised_match_df.rename(columns={0:"Scoring Average"}, inplace=True)
 	revised_match_df.sort_values(by="Scoring Average", inplace=True)
 	st.dataframe(revised_match_df)
