@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd, numpy as np
 
+st.set_page_config(page_title="NHS Golf Team", page_icon=":golf:", layout="wide", initial_sidebar_state="collapsed")
+
 st.title("2022 Northwod Varsity Golf Team Averages")
 
 #creating original dataframe
@@ -35,17 +37,17 @@ selection = st.sidebar.selectbox("Dataframe", ("Season Average", "User Selected 
 
 if selection == "Season Average": #gives entire dataframe
 	st.subheader("Season Average")
-	st.dataframe(players_df, 1000, 1000)
+	st.table(players_df)
 
 if selection == "User Selected Average": #gives selected columns of dataframe
 	col_types = st.sidebar.multiselect("Round Type", ("Match", "Practice Round", "Oak Creek", "Strawberry Farms", "Rancho San Joaquin"))
 	select_df = get_average(players_df, col_types)
 
 	st.subheader("Selected Average")
-	st.dataframe(select_df, 1000, 1000)
+	st.table(select_df)
 
 if selection == "Match Average Without Worse Score":
 	revised_match_df = pd.DataFrame(get_average(players_df, ["Match"]).iloc[:, :-1].apply(average_without_max, axis=1))
 	revised_match_df.rename(columns={0:"Scoring Average"}, inplace=True)
 	revised_match_df.sort_values(by="Scoring Average", inplace=True)
-	st.dataframe(revised_match_df)
+	st.table(revised_match_df)
