@@ -3,10 +3,10 @@ import pandas as pd, numpy as np
 
 st.set_page_config(page_title="NHS Golf Team", page_icon=":golf:", layout="wide", initial_sidebar_state="collapsed")
 
-st.title("2022 Northwod Varsity Golf Team Averages")
+st.title("2023 Northwod Varsity Golf Team Averages")
 
 #creating original dataframe
-players_df = pd.read_csv("Golf Team Averages 2022 Spring Season - Sheet1.csv")
+players_df = pd.read_csv("Golf Team Averages 2023 Spring Season.csv")
 columns = [column for column in players_df.columns[1:]]
 columns.insert(0,"")
 players_df.columns = columns
