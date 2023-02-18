@@ -3,10 +3,14 @@ import pandas as pd, numpy as np
 
 st.set_page_config(page_title="NHS Golf Team", page_icon=":golf:", layout="wide", initial_sidebar_state="collapsed")
 
-st.title("2023 Northwod Varsity Golf Team Averages")
+st.title("2023 Northwood Varsity Golf Team Averages")
 
 #creating original dataframe
 players_df = pd.read_csv("Golf Team Averages 2023 Spring Season.csv")
+scorecard_df = pd.read_csv("Golf Team Scorecard 2023 Spring Season.csv")
+stats_df = pd.read_csv("Golf Team Stats 2023 Spring Season.csv")
+stats_df.drop(columns="Unnamed: 0", inplace=True)
+stats_df.set_index("Player", inplace=True)
 columns = [column for column in players_df.columns[1:]]
 columns.insert(0,"")
 players_df.columns = columns
@@ -38,6 +42,9 @@ selection = st.sidebar.selectbox("Dataframe", ("Season Average", "User Selected 
 if selection == "Season Average": #gives entire dataframe
 	st.subheader("Season Average")
 	st.table(players_df)
+
+	st.subheader("Season Stats")
+	st.table(stats_df)
 
 if selection == "User Selected Average": #gives selected columns of dataframe
 	col_types = st.sidebar.multiselect("Round Type", ("Match", "Practice Round", "Oak Creek", "Strawberry Farms", "Rancho San Joaquin"))
